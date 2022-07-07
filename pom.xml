@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.frank.demo</groupId>
     <artifactId>Stripe-POC</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Stripe-POC</name>
     <version>1.0.0</version>
     <repositories>
