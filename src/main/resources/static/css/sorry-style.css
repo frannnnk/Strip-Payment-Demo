@@ -1,0 +1,71 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+body.sorry-page{
+    background: linear-gradient(90deg, #553690 -38.25%, #332d79 4.39%, #2a3795 38.51%, #314a7a 71.08%, #427192 102.1%)
+}
+
+#page {
+    width: 100vw;
+    text-align: center;
+    display: block;
+    position: absolute;
+    top: 20%;
+}
+
+.sorry-page-content {
+    position: relative;
+    margin: 0 auto;
+}
+
+.ud-logo-container {
+    width: 90px;
+    height: 108px;
+    display: block;
+    position: relative;
+}
+
+.ud-logo {
+    background: url("../image/ud-logo.svg") no-repeat center center;
+    background-size: contain;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+p.sorry-title,
+p.sorry-message,
+a.sorry-contact {
+    font-family: 'Heebo', sans-serif;
+}
+
+p.sorry-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    margin: 12px 0;
+}
+
+p.sorry-message {
+    margin: 12px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+b {
+    color: #28AA2E;
+}
+
+a.sorry-contact {
+    text-decoration: none;
+    color: #28AA2E;
+}
+
+@media screen and (min-width:1200px) {
+    #page {
+        width: 100%;
+        top: 224px;
+    }
+}
+
+

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bind</title>
+    <th:block th:insert="index.html :: resources" ></th:block>
+    <script>
+
+    function pay( ele, customerID, amt){
+        $("#msg").html('');
+        var original = ele.innerText;
+        ele.innerText = '正在扣錢。。';
+        ele.disabled = true;
+
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "/api/paypal/chargeOnce" ,
+            data: JSON.stringify({
+                customerId:"123",
+                customerBraintreeId:customerID,
+                amount:amt,
+                description:"testing"
+            }),
+            dataType: 'json',
+            contentType: "application/json" ,
+            success: function (data) {
+                 //console.log(data);
+                 ele.innerText = original;
+                 ele.disabled = false;
+                 $("#msg").html("<div style='font-weight: bolder;color: green; background-color: aquamarine;'>交易成功完成。 ("+data.message+")<br/>你可以到： <a target='_blank' href='https://sandbox.braintreegateway.com/merchants/snz9vbc522wm8hg3/transactions/advanced_search'>dashboard</a> 查閱詳情。</div>");
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr);
+                console.log(ajaxOptions);
+                console.log(thrownError);
+                $("#msg").html("<div style='font-weight: bolder;color: darkred; background-color: lightcoral;'>交易未能進行。 ("+xhr.responseJSON.message+")<br/>你可以到： <a target='_blank' href='https://sandbox.braintreegateway.com/merchants/snz9vbc522wm8hg3/transactions/advanced_search'>dashboard</a> 查閱詳情。</div>");
+                ele.innerText = original;
+                ele.disabled = false;
+            }
+        });
+    }
+
+    </script>
+    <style>
+        /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+        .StripeElement {
+            box-sizing: border-box;
+
+            height: 40px;
+
+            padding: 10px 12px;
+
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+</head>
+<body><div class="container">
+
+<h1>Paypal Test</h1>
+
+<div>
+    現有客戶資料：<br/><br/>
+
+
+    <div id="msg" ></div>
+    <table border="1" >
+        <thead>
+        <tr>
+
+
+            <th> Cus Braintree ID </th>
+            <th> 付款方式 </th>
+            <th> 卡號末4位 </th>
+            <th> 卡類別 </th>
+            <th> 卡國家 </th>
+            <th> 扣錢 </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${customerList.empty}">
+            <td colspan="2"> 無記錄 </td>
+        </tr>
+        <tr th:each="customer : ${customerList}">
+
+            <td><span th:text="${customer.customerBraintreeId}">  </span></td>
+            <td> <img th:src="${customer.customerBraintreeDefaultPaymentMethodImageURL}"></td>
+            <td><span th:text="${customer.last4}">  </span></td>
+            <td><span th:text="${customer.brand}">  </span></td>
+            <td><span th:text="${customer.country}">  </span></td>
+            <td>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'50.00')">扣 50 蚊 (正常)</button>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'2150.00')">扣 2150 蚊 (Processor Declined)</button>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'3000.44')">扣 3000.44 蚊 (Failed)</button>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'4001.44')">扣 4001.44 蚊 (Settlement Declined)</button>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'4002.44')">扣 4002.44 蚊 (Settlement Pending on PayPal transactions)</button>
+                <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'5001.00')">扣 5001.00 蚊 (Gateway Rejected)</button>
+            <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'5001.01')">扣 5001.01 蚊 (Processor Declined on PayPal transactions)</button>
+
+            <button th:data-id="${customer.customerBraintreeId}" onclick="pay(this, this.getAttribute('data-id'),'5001.02')">扣 5001.02 蚊 (Processor Unavailable)</button>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+
+<div th:replace="index.html :: div#links"></div>
+</div></body>
+</html>

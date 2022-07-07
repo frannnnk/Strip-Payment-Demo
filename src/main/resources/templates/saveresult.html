@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bind</title>
+
+    <th:block th:insert="index.html :: resources" ></th:block>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+        .StripeElement {
+            box-sizing: border-box;
+
+            height: 40px;
+
+            padding: 10px 12px;
+
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+</head>
+<body><div class="container">
+
+
+<div>
+    綁定結果：<br/><br/>
+    客戶編號：[[${stripe.customerId}]] <br/>
+
+    Stripe Token：[[${stripe.stripeToken}]] <br/>
+    Stripe Cus Id：[[${stripe.customerStripeId}]] <br/>
+    卡號末4位：[[${stripe.last4}]] <br/>
+    有效期年份：[[${stripe.exp_year}]] <br/>
+    有效期月份：[[${stripe.exp_month}]] <br/>
+    卡品牌：[[${stripe.brand}]] <br/>
+    卡國家：[[${stripe.country}]] <br/>
+
+    <hr>
+
+    現在你可以:<br/>
+
+    <a href="/charge">測試進行後台收款</a><br/>
+    <a href="/bind">返回登記新的客人信用卡資料</a>
+
+</div>
+
+
+<div th:replace="index.html :: div#links"></div>
+</div></body>
+</html>

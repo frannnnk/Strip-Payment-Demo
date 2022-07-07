@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Braintree Save Cus Info</title>
+    <th:block th:insert="index.html :: resources" ></th:block>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/css/app.css" th:href="@{/css/app.css}" />
+    <link rel="icon" type="image/png" href="/images/favicon.png" th:href="@{/images/favicon.png}"/>
+</head>
+<body><div class="container">
+
+<div class="wrapper">
+    <div class="response container">
+        <div class="content">
+            <div class="icon">
+                <img th:if="${isSuccess}" src="/images/success.svg" th:src="@{/images/success.svg}" alt="" />
+                <img th:unless="${isSuccess}" src="/images/fail.svg" th:src="@{/images/fail.svg}" alt="" />
+            </div>
+
+            <div th:if="${isSuccess}">
+                <h1>Sweet Success!</h1>
+
+                isSuccess: [[${isSuccess}]]<br/>
+                customerId: [[${customerId}]]<br/>
+
+                <div th:each="pm: ${customerPaymentMethods}">
+                    paymentMethod Token: [[${pm.token}]]<br/>
+                </div>
+
+                <br/>
+                You should be able to see this customer created in <a target="_blank" href="https://sandbox.braintreegateway.com/merchants/snz9vbc522wm8hg3/customers/advanced_search">Dashboard</a>
+
+
+
+            </div>
+            <div th:unless="${isSuccess}">
+                <h1>Save Failed</h1>
+                <section>Something wrong, check log pls.</section>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="index.html :: div#links"></div>
+</div></body>
+</html>

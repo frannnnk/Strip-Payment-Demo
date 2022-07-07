@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bind</title>
+
+    <script
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+        .StripeElement {
+            box-sizing: border-box;
+
+            height: 40px;
+
+            padding: 10px 12px;
+
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+</head>
+<body><div class="container">
+
+
+
+<form action="/savecard" method="post" id="payment-form">
+    <label for="customerId">客戶編號</label>
+    <input type="text" name="customerId" value="" id="customerId"  /><br/>
+    <label for="customerEmail">電郵</label>
+    <input type="text" name="customerEmail" value="" id="customerEmail"  />
+    <input type="hidden" name="stripeToken" id="stripeToken"  />
+    <input type="hidden" name="last4" id="last4"  />
+    <input type="hidden" name="brand" id="brand"  />
+    <input type="hidden" name="exp_month" id="exp_month"  />
+    <input type="hidden" name="exp_year" id="exp_year"  />
+    <input type="hidden" name="country" id="country"  />
+
+    <div class="form-row">
+        <label for="card-element">
+            Credit or debit card
+        </label>
+        <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+        </div>
+
+        <!-- Used to display form errors. -->
+        <div id="card-errors" role="alert"></div>
+    </div>
+
+    <button>授權并保存付款資料</button>
+</form>
+
+<script>
+    // Create a Stripe client.
+    var stripe = Stripe('pk_test_dpQwngpmciXo8X0tOQUUegcR');
+
+    // Create an instance of Elements.
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    // (Note that this demo uses a wider set of styles than the guide below.)
+    var style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#aab7c4'
+            }
+        },
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+        }
+    };
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', {style: style});
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element.
+    card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission.
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        stripe.createToken(card).then(function(result) {
+            if (result.error) {
+                // Inform the user if there was an error.
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+            } else {
+                // Send the token to your server.
+                stripeTokenHandler(result.token);
+            }
+        });
+    });
+
+    // Submit the form with the token ID.
+    function stripeTokenHandler(token) {
+        // Insert the token ID into the form so it gets submitted to the server
+        var form = document.getElementById('payment-form');
+
+
+        $("#stripeToken").val(token.id);
+        $("#exp_year").val(token.card.exp_year);
+        $("#exp_month").val(token.card.exp_month);
+        $("#last4").val(token.card.last4);
+        $("#brand").val(token.card.brand);
+        $("#country").val(token.card.country);
+
+        // Submit the form
+        form.submit();
+        var str = JSON.stringify(token);
+        console.log(token);
+        //alert(str);
+    }
+    </script>
+
+
+<div th:replace="index.html :: div#links"></div>
+</div></body>
+</html>

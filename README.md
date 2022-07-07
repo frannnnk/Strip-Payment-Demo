@@ -1,5 +1,5 @@
 # UDBA SSO Java Client Demo
 
 ### Overview  
-This demo is build according to [this article](https://www.baeldung.com/spring-security-cas-sso).  
+This demo is to show how we can use Stripe / Paypal to perform pre-authorized and recurring payments.  
 
